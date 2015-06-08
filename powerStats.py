@@ -40,9 +40,9 @@ robot.write('GetLifeStatLog\n')
 
 foundRun = False
 
-print '+---------------------------------------------------------+'
-print '| Log Entry | Runtime (minutes) | mAh Used | Current Draw | '
-print '+---------------------------------------------------------+'
+print '+-------------------------------------------------------------------------------------------------------------------------------+'
+print '| Log Entry | Runtime/Charge (minutes) | mAh Used / Consumed (mAh) | Min Current (mA) | Max Current (mA) | Average Current (mA) |' 
+print '+-------------------------------------------------------------------------------------------------------------------------------+'
 
 while True:
     line = robot.readline()
@@ -53,13 +53,17 @@ while True:
             if row[1] == 'LS_RunDate':
                 foundRun = True
             if foundRun == True:
-                if row[1] == 'LS_A2D1':
-                    runTime =  int(row[2])
-                elif row[1] == 'LS_A2D13':
+                if row[1] == 'LS_A2D13':
                     totalCurrent = int(row[5], 0)
-                    print '| ' + str(row[0]).ljust(10) + '| ' + str(runTime/6000).ljust(18) + '| ' \
-                        + str(totalCurrent/360000).ljust(9) + '| ' + str(totalCurrent/runTime).ljust(13) + '|'
+                    runTime =  int(row[2])
+                    minCur = int(row[3])
+                    maxCur = int(row[4])
+                    print '| ' + str(row[0]).ljust(10) + '| ' + str(runTime/6000).ljust(25) + '| ' \
+                        + str(totalCurrent/360000).ljust(26) + '| ' + str(minCur).ljust(17) + '| ' + str(maxCur).ljust(17) + '| ' + str(totalCurrent/runTime).ljust(21) + '|'
                     foundRun = False
 
-print '+---------------------------------------------------------+'
+print '+-------------------------------------------------------------------------------------------------------------------------------+'
+print '| Rows with negitive min current values include charge cycles and cause incorrect mAh Used / Consumed, run / charge time, and   |'  
+print '| average current readings. Please see the README for more information on testing procedures.                                   |'
+print '+-------------------------------------------------------------------------------------------------------------------------------+'
 robot.close()
